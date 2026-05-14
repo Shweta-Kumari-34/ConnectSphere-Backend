@@ -1,0 +1,30 @@
+# ==========================================
+# ADMIN SERVER CONFIGURATION
+# ==========================================
+
+server:
+  port: 9090
+
+spring:
+  application:
+    name: admin-server
+
+# Eureka Client Configuration
+# Admin Server discovers all services via Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: false
+    hostname: localhost
+
+# Actuator - expose all endpoints for self-monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

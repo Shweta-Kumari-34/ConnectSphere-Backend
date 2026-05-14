@@ -1,0 +1,84 @@
+# ==========================================
+# PAYMENT SERVICE CONFIGURATION
+# ==========================================
+
+server:
+  port: 8089
+
+spring:
+  application:
+    name: PAYMENT-SERVICE
+
+  # MySQL Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/payment_db
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA / Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME:}
+    password: ${GMAIL_APP_PASSWORD:}
+    test-connection: false
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+        debug: false
+
+# Eureka Client Configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: false
+    hostname: localhost
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+connectsphere:
+  auth-service:
+    url: ${CONNECTSPHERE_AUTH_SERVICE_URL:http://localhost:8083}
+  notification-service:
+    url: ${CONNECTSPHERE_NOTIFICATION_SERVICE_URL:http://localhost:8086}
+  internal-secret: ${CONNECTSPHERE_INTERNAL_SECRET:connectsphere-internal-secret}
+  webhook-secret: ${CONNECTSPHERE_WEBHOOK_SECRET:connectsphere-webhook-secret}
+  demo-upi:
+    virtual-address: ${CONNECTSPHERE_DEMO_UPI_VPA:demo.connectsphere@okaxis}
+    merchant-name: ${CONNECTSPHERE_DEMO_UPI_MERCHANT:ConnectSphere Demo Merchant}
+  demo-email:
+    enabled: ${CONNECTSPHERE_DEMO_EMAIL_ENABLED:true}
+    outbox-dir: ${CONNECTSPHERE_DEMO_EMAIL_OUTBOX_DIR:demo-outbox}
+  razorpay:
+    enabled: ${CONNECTSPHERE_RAZORPAY_ENABLED:false}
+    sandbox-mode: ${CONNECTSPHERE_RAZORPAY_SANDBOX_MODE:true}
+    key-id: ${CONNECTSPHERE_RAZORPAY_KEY_ID:}
+    key-secret: ${CONNECTSPHERE_RAZORPAY_KEY_SECRET:}
