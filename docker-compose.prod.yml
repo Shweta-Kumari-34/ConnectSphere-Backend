@@ -1,0 +1,67 @@
+# ================================================
+# ConnectSphere — Production Docker Compose Override
+# ================================================
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# This overlay applies production-safe defaults:
+#   - Disables SQL logging
+#   - Sets Hibernate DDL to 'validate'
+#   - Restricts actuator endpoints
+#   - Disables debug logging
+# ================================================
+
+version: '3.8'
+
+x-prod-jpa: &prod-jpa
+  SPRING_JPA_SHOW_SQL: "false"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+x-prod-actuator: &prod-actuator
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info
+
+services:
+
+  api-gateway:
+    environment:
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_GATEWAY: INFO
+
+  auth-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  post-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  comment-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  like-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  follow-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  notification-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  media-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  search-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  payment-service:
+    environment:
+      <<: [*prod-jpa, *prod-actuator]
+
+  email-service:
+    environment:
+      <<: *prod-actuator
