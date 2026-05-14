@@ -1,0 +1,95 @@
+# ==========================================
+# AUTH SERVICE CONFIGURATION
+# ==========================================
+
+server:
+  port: 8083
+
+spring:
+  application:
+    name: AUTH-SERVICE
+
+  # MySQL Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_db
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA / Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  # Gmail SMTP via App Password
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME:}
+    password: ${GMAIL_APP_PASSWORD:}
+    test-connection: false
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+        debug: false
+
+  # OAuth2 Configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:}
+            client-secret: ${GOOGLE_CLIENT_SECRET:}
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+# Eureka Client Configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: false
+    hostname: localhost
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:connectsphereprojectsecretkeyconnectsphereauthsecure123456}
+
+# Frontend URL for OAuth redirect
+app:
+  frontend-url: http://localhost:4200
+  public-auth-url: http://localhost:8090/auth
+  internal-secret: ${CONNECTSPHERE_INTERNAL_SECRET:connectsphere-internal-secret}
+
+connectsphere:
+  profile-picture:
+    dir: ./uploads/profile-pictures
+  verification:
+    dir: ./uploads/verification
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  health:
+    mail:
+      enabled: ${MAIL_HEALTH_ENABLED:false}
