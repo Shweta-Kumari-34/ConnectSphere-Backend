@@ -1,0 +1,37 @@
+# ================================================
+# ConnectSphere Backend — .gitignore
+# ================================================
+
+# OS Specific
+Thumbs.db
+.DS_Store
+
+# Maven Build
+**/target/
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+*.err
+
+# IDE — Eclipse / STS / IntelliJ / VS Code
+.idea/
+.settings/
+.project
+.classpath
+.factorypath
+.vscode/
+*.iml
+*.code-workspace
+bin/
+out/
+
+# Eclipse Workspace Metadata
+**/.metadata/
+
+# Environment Secrets
+.env
+.env.production
+*.properties.local
