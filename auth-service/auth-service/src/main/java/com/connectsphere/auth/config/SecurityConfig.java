@@ -35,6 +35,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final org.springframework.core.env.Environment env;
 
     /**
