@@ -51,6 +51,10 @@ jobs:
           CONNECTSPHERE_INTERNAL_SECRET: test-internal-secret
           EUREKA_CLIENT_ENABLED: "false"
           SPRING_CLOUD_DISCOVERY_ENABLED: "false"
+          SPRING_CACHE_TYPE: none
+          SPRING_DATA_REDIS_REPOSITORIES_ENABLED: "false"
+          GOOGLE_CLIENT_ID: "test-client-id"
+          GOOGLE_CLIENT_SECRET: "test-client-secret"
 
       - name: SonarQube Analysis
         run: mvn -B sonar:sonar
