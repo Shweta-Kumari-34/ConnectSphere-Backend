@@ -27,6 +27,25 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+      rabbitmq:
+        image: rabbitmq:3-management-alpine
+        ports:
+          - 5672:5672
+          - 15672:15672
+        options: >-
+          --health-cmd="rabbitmq-diagnostics -q check_running"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout repository
@@ -47,13 +66,14 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/test_db
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root
+          SPRING_REDIS_HOST: localhost
+          SPRING_REDIS_PORT: 6379
+          SPRING_RABBITMQ_HOST: localhost
+          SPRING_RABBITMQ_PORT: 5672
           JWT_SECRET: connectsphere-test-secret-key-1234567890
           CONNECTSPHERE_INTERNAL_SECRET: test-internal-secret
           EUREKA_CLIENT_ENABLED: "false"
           SPRING_CLOUD_DISCOVERY_ENABLED: "false"
-          SPRING_CACHE_TYPE: none
-          SPRING_DATA_REDIS_REPOSITORIES_ENABLED: "false"
-          SPRING_AUTOCONFIGURE_EXCLUDE: "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration,org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"
           GOOGLE_CLIENT_ID: "test-client-id"
           GOOGLE_CLIENT_SECRET: "test-client-secret"
           CLOUDINARY_CLOUD_NAME: "test-cloud"
