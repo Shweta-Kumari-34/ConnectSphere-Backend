@@ -112,19 +112,23 @@ jobs:
             mkdir -p $WORKSPACE
             cd $WORKSPACE
 
+            sync_repo() {
+              REPO_DIR="$1"
+              REPO_URL="$2"
+
+              if [ -d "$REPO_DIR/.git" ]; then
+                git -C "$REPO_DIR" pull origin main
+              else
+                rm -rf "$REPO_DIR"
+                git clone "$REPO_URL" "$REPO_DIR"
+              fi
+            }
+
             # Sync Backend Repository
-            if [ ! -d "ConnectSphere-Backend" ]; then
-              git clone https://${{ secrets.GH_PAT }}@github.com/Shweta-Kumari-34/ConnectSphere-Backend.git
-            else
-              cd ConnectSphere-Backend && git pull origin main && cd ..
-            fi
+            sync_repo "ConnectSphere-Backend" "https://${{ secrets.GH_PAT }}@github.com/Shweta-Kumari-34/ConnectSphere-Backend.git"
 
             # Sync Frontend Repository
-            if [ ! -d "ConnectSphere-Frontend" ]; then
-              git clone https://${{ secrets.GH_PAT }}@github.com/Shweta-Kumari-34/ConnectSphere-Frontend.git
-            else
-              cd ConnectSphere-Frontend && git pull origin main && cd ..
-            fi
+            sync_repo "ConnectSphere-Frontend" "https://${{ secrets.GH_PAT }}@github.com/Shweta-Kumari-34/ConnectSphere-Frontend.git"
 
             test -f ConnectSphere-Frontend/Dockerfile
 
