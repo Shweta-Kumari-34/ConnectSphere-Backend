@@ -35,15 +35,17 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final org.springframework.core.env.Environment env;
 
     /**
      * Constructs the SecurityConfig with required dependencies.
      * 
      * @param oAuth2LoginSuccessHandler the success handler for OAuth2 logins
+     * @param env the environment variables
      */
-    public SecurityConfig(OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) {
+    public SecurityConfig(OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, org.springframework.core.env.Environment env) {
         this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
+        this.env = env;
     }
 
     /**
@@ -73,6 +75,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable()) // Stateless REST API
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
@@ -84,5 +87,27 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        String allowedOrigins = env.getProperty("CORS_ALLOWED_ORIGINS", "*");
+        
+        CorsConfiguration configuration = new CorsConfiguration();
+        if ("*".equals(allowedOrigins)) {
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            configuration.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        }
+        
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

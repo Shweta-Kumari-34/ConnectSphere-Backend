@@ -108,6 +108,7 @@ services:
       context: ./api-gateway/api-gateway
       dockerfile: Dockerfile
     container_name: connectsphere-gateway
+    restart: always
     ports:
       - "18090:8090"
     environment:
@@ -129,12 +130,14 @@ services:
       context: ./auth-service/auth-service
       dockerfile: Dockerfile
     container_name: connectsphere-auth
+    restart: always
     ports:
       - "18081:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/auth_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       EUREKA_INSTANCE_HOSTNAME: auth-service
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
@@ -146,7 +149,6 @@ services:
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
       PUBLIC_AUTH_URL: ${PUBLIC_AUTH_URL:-http://localhost:8090/auth}
       CONNECTSPHERE_INTERNAL_SECRET: ${CONNECTSPHERE_INTERNAL_SECRET:-connectsphere-internal-secret}
-      JAVA_TOOL_OPTIONS: -Deureka.instance.hostname=auth-service -Deureka.instance.preferIpAddress=false
     depends_on:
       mysql:
         condition: service_healthy
@@ -160,18 +162,22 @@ services:
       context: ./post-service/post-service
       dockerfile: Dockerfile
     container_name: connectsphere-post
+    restart: always
     ports:
       - "8082:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/post_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_DATA_REDIS_HOST: redis
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: post-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       JWT_SECRET: ${JWT_SECRET:-connectsphereprojectsecretkeyconnectsphereauthsecure123456}
     depends_on:
       mysql:
@@ -190,16 +196,20 @@ services:
       context: ./comment-service
       dockerfile: Dockerfile
     container_name: connectsphere-comment
+    restart: always
     ports:
       - "8093:8093"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/comment_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: comment-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
     depends_on:
       mysql:
         condition: service_healthy
@@ -215,16 +225,20 @@ services:
       context: ./like-service
       dockerfile: Dockerfile
     container_name: connectsphere-like
+    restart: always
     ports:
       - "8084:8084"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/like_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: like-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
     depends_on:
       mysql:
         condition: service_healthy
@@ -240,16 +254,20 @@ services:
       context: ./follow-service
       dockerfile: Dockerfile
     container_name: connectsphere-follow
+    restart: always
     ports:
       - "8085:8085"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/follow_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: follow-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
     depends_on:
       mysql:
         condition: service_healthy
@@ -265,19 +283,20 @@ services:
       context: ./notification-service
       dockerfile: Dockerfile
     container_name: connectsphere-notification
+    restart: always
     ports:
       - "18086:8086"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/notification_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       EUREKA_INSTANCE_HOSTNAME: notification-service
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
-      JAVA_TOOL_OPTIONS: -Deureka.instance.hostname=notification-service -Deureka.instance.preferIpAddress=false
     depends_on:
       mysql:
         condition: service_healthy
@@ -293,16 +312,20 @@ services:
       context: ./media-service
       dockerfile: Dockerfile
     container_name: connectsphere-media
+    restart: always
     ports:
       - "8092:8092"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/media_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: media-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
@@ -321,13 +344,17 @@ services:
       context: ./search-service
       dockerfile: Dockerfile
     container_name: connectsphere-search
+    restart: always
     ports:
       - "8088:8088"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/search_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: search-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
     depends_on:
       mysql:
         condition: service_healthy
@@ -341,13 +368,17 @@ services:
       context: ./payment-service/payment-service
       dockerfile: Dockerfile
     container_name: connectsphere-payment
+    restart: always
     ports:
       - "8089:8089"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/payment_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 3
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: payment-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
       GMAIL_USERNAME: ${GMAIL_USERNAME:-}
       GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
       CONNECTSPHERE_INTERNAL_SECRET: ${CONNECTSPHERE_INTERNAL_SECRET:-connectsphere-internal-secret}
@@ -367,6 +398,7 @@ services:
       context: ./email-service
       dockerfile: Dockerfile
     container_name: connectsphere-email
+    restart: always
     ports:
       - "8087:8087"
     environment:
@@ -376,6 +408,8 @@ services:
       MAIL_USERNAME: ${GMAIL_USERNAME:-}
       MAIL_PASSWORD: ${GMAIL_APP_PASSWORD:-}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: email-service
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -389,10 +423,13 @@ services:
       context: ./admin-server/admin-server
       dockerfile: Dockerfile
     container_name: connectsphere-admin
+    restart: always
     ports:
       - "9090:9090"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: admin-server
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "false"
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -403,6 +440,7 @@ services:
     build:
       context: ../ConnectSphere-Frontend
     container_name: connectsphere-frontend
+    restart: always
     ports:
       - "80:80"
     depends_on:
