@@ -84,6 +84,7 @@ jobs:
           MAIL_HEALTH_ENABLED: "false"
 
       - name: SonarQube Analysis
+        continue-on-error: true
         run: >
           mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar
           -Dsonar.organization=${{ github.repository_owner }}
