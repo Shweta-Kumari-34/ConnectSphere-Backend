@@ -42,7 +42,7 @@ jobs:
           cache: maven
 
       - name: Run Unit Tests
-        run: mvn -B clean test -pl "!eureka-server"
+        run: mvn -B clean test -pl "!:eureka-server"
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/test_db
           SPRING_DATASOURCE_USERNAME: root
@@ -53,6 +53,7 @@ jobs:
           SPRING_CLOUD_DISCOVERY_ENABLED: "false"
           SPRING_CACHE_TYPE: none
           SPRING_DATA_REDIS_REPOSITORIES_ENABLED: "false"
+          SPRING_AUTOCONFIGURE_EXCLUDE: "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration,org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration"
           GOOGLE_CLIENT_ID: "test-client-id"
           GOOGLE_CLIENT_SECRET: "test-client-secret"
           CLOUDINARY_CLOUD_NAME: "test-cloud"
@@ -60,6 +61,7 @@ jobs:
           CLOUDINARY_API_SECRET: "test-secret"
           RAZORPAY_KEY_ID: "test-razor-id"
           RAZORPAY_KEY_SECRET: "test-razor-secret"
+          MAIL_HEALTH_ENABLED: "false"
 
       - name: SonarQube Analysis
         run: mvn -B sonar:sonar
