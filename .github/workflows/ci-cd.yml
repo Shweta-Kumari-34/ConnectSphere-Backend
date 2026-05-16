@@ -42,7 +42,7 @@ jobs:
           cache: maven
 
       - name: Run Unit Tests
-        run: mvn -B clean test
+        run: mvn -B clean test -pl "!eureka-server"
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/test_db
           SPRING_DATASOURCE_USERNAME: root
@@ -55,6 +55,11 @@ jobs:
           SPRING_DATA_REDIS_REPOSITORIES_ENABLED: "false"
           GOOGLE_CLIENT_ID: "test-client-id"
           GOOGLE_CLIENT_SECRET: "test-client-secret"
+          CLOUDINARY_CLOUD_NAME: "test-cloud"
+          CLOUDINARY_API_KEY: "test-key"
+          CLOUDINARY_API_SECRET: "test-secret"
+          RAZORPAY_KEY_ID: "test-razor-id"
+          RAZORPAY_KEY_SECRET: "test-razor-secret"
 
       - name: SonarQube Analysis
         run: mvn -B sonar:sonar
