@@ -56,7 +56,7 @@ class SearchControllerTest {
     @Test
     @DisplayName("POST /search/index — should index specific tag when no content")
     void indexPost_WithTag() throws Exception {
-        doNothing().when(searchService).indexHashtag(eq("java"), eq(10L));
+        when(searchService.indexHashtag("java", 10L)).thenReturn(testHashtag);
 
         mockMvc.perform(post("/search/index")
                         .contentType(MediaType.APPLICATION_JSON)
