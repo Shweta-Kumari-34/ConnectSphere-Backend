@@ -84,7 +84,11 @@ jobs:
           MAIL_HEALTH_ENABLED: "false"
 
       - name: SonarQube Analysis
-        run: mvn -B sonar:sonar
+        run: >
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar
+          -Dsonar.organization=${{ github.repository_owner }}
+          -Dsonar.projectKey=connectsphere-backend
+          -Dsonar.projectName="ConnectSphere Backend"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
