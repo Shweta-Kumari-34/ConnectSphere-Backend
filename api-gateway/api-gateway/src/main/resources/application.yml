@@ -19,27 +19,30 @@ spring:
 
   cloud:
     gateway:
+      # --- ADDED THIS CORS SECTION ---
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "${CORS_ALLOWED_ORIGINS:http://localhost:4200}"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+      # -------------------------------
       httpclient:
         connect-timeout: 60000
         response-timeout: 600s
       
-      # Route Definitions:
-      # Each route directs traffic to a specific microservice identified by 'lb://SERVICE-NAME' (Eureka Discovery).
-      # Routes using 'JwtFilter' require a valid Authorization header with a Bearer token.
       routes:
-        # Auth Service: Handles login, registration, and profile management.
         - id: oauth2-auth
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/oauth2/**
 
-        # OAuth2 Callback Route
         - id: oauth2-callback
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/login/oauth2/**
 
-        # Auth Service Route
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
@@ -47,7 +50,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Post Service Route
         - id: post-service
           uri: lb://POST-SERVICE
           predicates:
@@ -55,7 +57,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Reels Route
         - id: reels-service
           uri: lb://POST-SERVICE
           predicates:
@@ -63,19 +64,16 @@ spring:
           filters:
             - JwtFilter
 
-        # Reel Upload Files
         - id: reels-uploads
           uri: lb://POST-SERVICE
           predicates:
             - Path=/uploads/reels/**
 
-        # Payment Service Webhook
         - id: payment-service-webhook
           uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/payments/webhook
 
-        # Payment Service
         - id: payment-service
           uri: lb://PAYMENT-SERVICE
           predicates:
@@ -83,7 +81,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Comment Service
         - id: comment-service
           uri: lb://COMMENT-SERVICE
           predicates:
@@ -91,7 +88,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Like Service
         - id: like-service
           uri: lb://LIKE-SERVICE
           predicates:
@@ -99,7 +95,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Follow Service
         - id: follow-service
           uri: lb://FOLLOW-SERVICE
           predicates:
@@ -107,7 +102,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Notification Service
         - id: notification-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
@@ -115,7 +109,6 @@ spring:
           filters:
             - JwtFilter
         
-        # Media Service
         - id: media-service
           uri: lb://MEDIA-SERVICE
           predicates:
@@ -123,13 +116,11 @@ spring:
           filters:
             - JwtFilter
 
-        # Media Uploads
         - id: media-uploads
           uri: lb://MEDIA-SERVICE
           predicates:
             - Path=/uploads/**
 
-        # Search Service
         - id: search-service
           uri: lb://SEARCH-SERVICE
           predicates:
@@ -137,7 +128,6 @@ spring:
           filters:
             - JwtFilter
 
-        # Report Service
         - id: report-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
@@ -187,3 +177,4 @@ springdoc:
         url: /search/v3/api-docs
       - name: Payment Service
         url: /payments/v3/api-docs
+

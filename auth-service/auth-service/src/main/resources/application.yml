@@ -11,7 +11,7 @@ spring:
 
   # MySQL Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/auth_db
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/auth_db?createDatabaseIfNotExist=true
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -74,8 +74,8 @@ jwt:
 
 # Frontend URL for OAuth redirect
 app:
-  frontend-url: http://localhost:4200
-  public-auth-url: http://localhost:8090/auth
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+  public-auth-url: ${PUBLIC_AUTH_URL:http://localhost:8090/auth}
   internal-secret: ${CONNECTSPHERE_INTERNAL_SECRET:connectsphere-internal-secret}
 
 connectsphere:

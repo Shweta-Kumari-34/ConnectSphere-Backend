@@ -73,7 +73,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable()) // Stateless REST API
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
@@ -85,28 +84,5 @@ public class SecurityConfig {
             );
 
         return http.build();
-    }
-
-    /**
-     * Configures CORS (Cross-Origin Resource Sharing) settings.
-     * <p>
-     * Specifically allows requests from the Angular frontend (http://localhost:4200).
-     * </p>
-     * 
-     * @return the configured {@link CorsConfigurationSource}
-     */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
-        config.setExposedHeaders(List.of("Authorization"));
-        config.setAllowCredentials(true);
-        config.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
     }
 }

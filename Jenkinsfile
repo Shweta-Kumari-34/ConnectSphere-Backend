@@ -140,7 +140,7 @@ pipeline {
                     }
                     post {
                         always {
-                            junit 'ConnectSphere-Backend/auth-service/auth-service/target/surefire-reports/*.xml'
+                            junit 'auth-service/auth-service/target/surefire-reports/*.xml'
                         }
                     }
                 }
@@ -254,12 +254,18 @@ pipeline {
             }
         }
 
-        stage('Build Angular Frontend') {
+        stage('Build Angular Frontend (Optional)') {
             steps {
-                echo '🌐 Building Angular frontend...'
-                dir('ConnectSphere-Frontend') {
-                    bat 'npm install'
-                    bat 'npx ng build --configuration=production'
+                script {
+                    if (fileExists('ConnectSphere-Frontend/package.json')) {
+                        echo '🌐 Building Angular frontend...'
+                        dir('ConnectSphere-Frontend') {
+                            bat 'npm install'
+                            bat 'npx ng build --configuration=production'
+                        }
+                    } else {
+                        echo 'Frontend folder not present in this Jenkins workspace. Skipping frontend build stage.'
+                    }
                 }
             }
         }

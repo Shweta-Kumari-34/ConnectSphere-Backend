@@ -113,6 +113,7 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       JWT_SECRET: ${JWT_SECRET:-connectsphereprojectsecretkeyconnectsphereauthsecure123456}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -131,7 +132,7 @@ services:
     ports:
       - "18081:8083"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/auth_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/auth_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
@@ -142,6 +143,8 @@ services:
       GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD:-}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4200}
+      PUBLIC_AUTH_URL: ${PUBLIC_AUTH_URL:-http://localhost:8090/auth}
       CONNECTSPHERE_INTERNAL_SECRET: ${CONNECTSPHERE_INTERNAL_SECRET:-connectsphere-internal-secret}
       JAVA_TOOL_OPTIONS: -Deureka.instance.hostname=auth-service -Deureka.instance.preferIpAddress=false
     depends_on:
@@ -160,7 +163,7 @@ services:
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/post_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/post_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
@@ -190,7 +193,7 @@ services:
     ports:
       - "8093:8093"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/comment_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/comment_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -215,7 +218,7 @@ services:
     ports:
       - "8084:8084"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/like_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/like_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -240,7 +243,7 @@ services:
     ports:
       - "8085:8085"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/follow_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/follow_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -265,7 +268,7 @@ services:
     ports:
       - "18086:8086"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/notification_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/notification_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -293,7 +296,7 @@ services:
     ports:
       - "8092:8092"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/media_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/media_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SPRING_RABBITMQ_HOST: rabbitmq
@@ -321,7 +324,7 @@ services:
     ports:
       - "8088:8088"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/search_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/search_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
@@ -341,7 +344,7 @@ services:
     ports:
       - "8089:8089"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/payment_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST:-mysql}:${DB_PORT:-3306}/payment_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-root}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
@@ -361,7 +364,7 @@ services:
 
   email-service:
     build:
-      context: ./ConnectSphere-Backend/email-service
+      context: ./email-service
       dockerfile: Dockerfile
     container_name: connectsphere-email
     ports:
@@ -381,13 +384,9 @@ services:
     networks:
       - connectsphere-network
 
-  # ==========================================
-  # MONITORING
-  # ==========================================
-
   admin-server:
     build:
-      context: ./ConnectSphere-Backend/admin-server/admin-server
+      context: ./admin-server/admin-server
       dockerfile: Dockerfile
     container_name: connectsphere-admin
     ports:
@@ -400,13 +399,9 @@ services:
     networks:
       - connectsphere-network
 
-  # ==========================================
-  # FRONTEND
-  # ==========================================
-
   frontend:
     build:
-      context: ../ConnectSphere-Frontend/connectsphere-frontend
+      context: ../ConnectSphere-Frontend
       dockerfile: Dockerfile
     container_name: connectsphere-frontend
     ports:

@@ -1,37 +1,70 @@
-# ================================================
-# ConnectSphere Backend — .gitignore
-# ================================================
+# ========================================================
+# CONNECTSPHERE - COMPREHENSIVE .GITIGNORE
+# ========================================================
 
-# OS Specific
+# --- 1. OS & SYSTEM ---
 Thumbs.db
 .DS_Store
+*.tmp
+*.bak
+*.swp
 
-# Maven Build
+# --- 2. BUILD ARTIFACTS (MAVEN) ---
 **/target/
+**/bin/
+**/out/
 *.jar
 *.war
 *.ear
+.mvn/wrapper/*.jar
 
-# Logs
+# --- 3. LOGS & TEMPORARY FILES ---
 *.log
 *.err
+logs/
+temp/
+tmp/
 
-# IDE — Eclipse / STS / IntelliJ / VS Code
+# --- 4. IDE & EDITOR SETTINGS ---
+# IntelliJ
 .idea/
+*.iws
+*.iml
+*.ipr
+# Eclipse / STS
 .settings/
 .project
 .classpath
 .factorypath
-.vscode/
-*.iml
-*.code-workspace
-bin/
-out/
-
-# Eclipse Workspace Metadata
 **/.metadata/
+# VS Code
+.vscode/
+*.code-workspace
 
-# Environment Secrets
+# --- 5. SECRETS & ENVIRONMENT ---
 .env
 .env.production
+.env.local
+.env.*.local
 *.properties.local
+
+# --- 6. INFRASTRUCTURE & SCRIPTS ---
+# Local Docker Data
+mysql-data/
+# Legacy CI/CD
+Jenkinsfile
+build-and-push.ps1
+docker-compose-aws.yml
+
+# --- 7. DEVELOPMENT TOOLS ---
+ConnectSphere-API-Collection.postman_collection.json
+*.postman_collection.json
+CACHE_TTL_GUIDE.md
+
+# --- 8. PROJECT SPECIFIC ---
+uploads/
+**/uploads/
+demo-outbox/
+**/demo-outbox/
+coverage/
+**/coverage/

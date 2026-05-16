@@ -1,0 +1,91 @@
+# ========================================================
+# GitHub Actions CI/CD Pipeline (Backend)
+# ========================================================
+
+name: ConnectSphere Backend CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-and-analyze:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run Unit Tests
+        run: mvn clean test -pl "!eureka-server"
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/test_db
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: root
+
+      - name: SonarQube Analysis
+        run: mvn sonar:sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test-and-analyze
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            WORKSPACE="~/connectsphere"
+            mkdir -p $WORKSPACE
+            cd $WORKSPACE
+
+            # Sync Backend Repository
+            if [ ! -d "ConnectSphere-Backend" ]; then
+              git clone https://${{ secrets.GH_PAT }}@github.com/Shweta-Kumari-34/ConnectSphere-Backend.git
+            else
+              cd ConnectSphere-Backend && git pull origin main && cd ..
+            fi
+
+            # Sync Frontend Repository
+            if [ ! -d "ConnectSphere-Frontend" ]; then
+              git clone https://${{ secrets.GH_PAT }}@github.com/Shweta-Kumari-34/ConnectSphere-Frontend.git
+            else
+              cd ConnectSphere-Frontend && git pull origin main && cd ..
+            fi
+
+            # Orchestrate with Docker Compose
+            cd ConnectSphere-Backend
+            docker compose up -d --build
+            echo "Deployment to Production Successful."

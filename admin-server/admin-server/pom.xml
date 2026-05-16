@@ -91,6 +91,13 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
+                <configuration>
+                    <includes>
+                        <include>com/connectsphere/**</include>
+                    </includes>
+                    <inclBootstrapClasses>false</inclBootstrapClasses>
+                    <inclNoLocationClasses>false</inclNoLocationClasses>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
