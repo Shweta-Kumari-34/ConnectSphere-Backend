@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.connectsphere</groupId>
+    <artifactId>connectsphere-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>ConnectSphere Parent</name>
+    <description>ConnectSphere Microservices Aggregator</description>
+
+    <modules>
+        <module>admin-server/admin-server</module>
+        <module>api-gateway/api-gateway</module>
+        <module>auth-service/auth-service</module>
+        <module>comment-service</module>
+        <module>email-service</module>
+        <module>eureka-server/eureka-server</module>
+        <module>follow-service</module>
+        <module>like-service</module>
+        <module>media-service</module>
+        <module>notification-service</module>
+        <module>payment-service/payment-service</module>
+        <module>post-service/post-service</module>
+        <module>search-service</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+</project>
