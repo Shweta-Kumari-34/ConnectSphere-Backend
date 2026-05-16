@@ -404,7 +404,7 @@ services:
       context: ../ConnectSphere-Frontend
     container_name: connectsphere-frontend
     ports:
-      - "4200:80"
+      - "80:80"
     depends_on:
       - api-gateway
     networks:
