@@ -41,14 +41,14 @@ jobs:
           cache: maven
 
       - name: Run Unit Tests
-        run: mvn clean test -pl "!eureka-server"
+        run: mvn -B clean test
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/test_db
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root
 
       - name: SonarQube Analysis
-        run: mvn sonar:sonar
+        run: mvn -B sonar:sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
