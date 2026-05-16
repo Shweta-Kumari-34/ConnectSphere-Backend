@@ -402,7 +402,6 @@ services:
   frontend:
     build:
       context: ../ConnectSphere-Frontend
-      dockerfile: Dockerfile
     container_name: connectsphere-frontend
     ports:
       - "4200:80"

@@ -108,7 +108,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            WORKSPACE="~/connectsphere"
+            WORKSPACE="$HOME/connectsphere"
             mkdir -p $WORKSPACE
             cd $WORKSPACE
 
@@ -125,6 +125,8 @@ jobs:
             else
               cd ConnectSphere-Frontend && git pull origin main && cd ..
             fi
+
+            test -f ConnectSphere-Frontend/Dockerfile
 
             # Orchestrate with Docker Compose
             cd ConnectSphere-Backend
